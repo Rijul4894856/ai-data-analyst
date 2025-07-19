@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analysis Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>AI Data Analyst</h1>
+            </div>
+            <p class="subtitle">Upload your dataset and let AI help you discover insights through powerful analysis</p>
+        </header>
+        
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-header">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h2>Upload Your Dataset</h2>
+            </div>
+            
+            <div class="file-upload">
+                <i class="fas fa-file-upload"></i>
+                <p>Drag & drop your CSV, Excel, or JSON file here or click the button below</p>
+                <button class="upload-btn">
+                    <i class="fas fa-folder-open"></i> Choose File
+                </button>
+                
+                <div class="file-types">
+                    <div class="file-type">
+                        <i class="fas fa-file-csv"></i> CSV
+                    </div>
+                    <div class="file-type">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </div>
+                    <div class="file-type">
+                        <i class="fas fa-file-code"></i> JSON
+                    </div>
+                    <div class="file-type">
+                        <i class="fas fa-database"></i> SQL
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="basic">
+                <i class="fas fa-cogs"></i> Basic Analysis
+            </button>
+            <button class="tab-btn" data-tab="intermediate">
+                <i class="fas fa-chart-line"></i> Intermediate
+            </button>
+            <button class="tab-btn" data-tab="advanced">
+                <i class="fas fa-robot"></i> Advanced AI
+            </button>
+        </div>
+        
+        <!-- Basic Tab Content -->
+        <div id="basic" class="tab-content active">
+            <div class="tab-header">
+                <h2>Basic Data Analysis</h2>
+                <p>Perform essential data cleaning, transformation, and visualization using Pandas, Seaborn, and Matplotlib.</p>
+            </div>
+            
+            <!-- <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-broom"></i>
+                        </div>
+                        <h3 class="card-title">Data Cleaning</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Remove duplicate rows and columns</li>
+                            <li>Handle missing values (impute or remove)</li>
+                            <li>Detect and remove outliers</li>
+                            <li>Standardize data formats</li>
+                            <li>Fix inconsistent data entries</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="card-title">Data Transformation</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Data type conversion</li>
+                            <li>Column renaming and reordering</li>
+                            <li>Filtering rows based on conditions</li>
+                            <li>Adding calculated columns</li>
+                            <li>Group by and aggregate functions</li>
+                            <li>Pivot tables creation</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <h3 class="card-title">Data Exploration</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Summary statistics (mean, median, mode)</li>
+                            <li>Data distribution analysis</li>
+                            <li>Correlation matrix calculation</li>
+                            <li>Value counts for categorical data</li>
+                            <li>Identify data skewness</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="visualization-section">
+                    <h3><i class="fas fa-chart-bar"></i> Data Visualization</h3>
+                    <div class="chart-container">
+                        <div class="chart-box">
+                            <canvas id="histogram"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="scatter"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="bar"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="card cleaning-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-broom"></i></div>
+                    <h3 class="card-title">Data Cleaning Options</h3>
+                </div>
+                <div class="card-content">
+                    <form id="cleaning-form">
+                        <div class="cleaning-option">
+                            <label><input type="checkbox" name="drop_duplicates"> Drop Duplicates</label>
+                        </div>
+                        <div class="cleaning-option">
+                            <label><input type="checkbox" name="strip_column_names"> Strip Column Names</label>
+                        </div>
+                        <div class="cleaning-option">
+                            <label><input type="checkbox" name="lowercase_columns"> Convert Column Names to Lowercase</label>
+                        </div>
+                        <div class="cleaning-option">
+                            <label>Fill Missing Values:
+                                <select name="fillna">
+                                    <option value="">-- Skip --</option>
+                                    <option value="na">Fill with "N/A"</option>
+                                    <option value="zero">Fill with 0</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button type="button" id="clean-btn" class="upload-btn" style="width: 50%;">🧹 Clean Data</button>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <a id="download-link" href="#" class="upload-btn" style="width: 50%;">📥 Download Cleaned CSV</a>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                  <h3 class="card-title">Generate Chart</h3>
+                </div>
+                <div class="card-content">
+                  <form id="chart-form">
+                    <div class="chart-option">
+                      <label for="chart-type">Chart Type:</label>
+                      <select id="chart-type">
+                        <option value="bar">Bar Chart</option>
+                        <option value="scatter">Scatter Plot</option>
+                        <option value="hist">Histogram</option>
+                      </select>
+                    </div>
+              
+                    <div class="chart-option">
+                      <label for="x-col">X-Axis Column:</label>
+                      <select id="x-col">
+                        <option disabled selected>Loading...</option>
+                      </select>
+                    </div>
+              
+                    <div class="chart-option">
+                      <label for="y-col">Y-Axis Column:</label>
+                      <select id="y-col">
+                        <option disabled selected>Loading...</option>
+                      </select>
+                    </div>
+              
+                    <div style="text-align: center; margin-top: 15px;">
+                      <button type="button" id="plot-btn" class="upload-btn" style="width: 50%;">📊 Generate Plot</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              
+              <div id="chart-display" style="margin-top: 25px; text-align: center;">
+                <img id="plot-img" src="" alt="Chart will appear here" style="max-width: 90%; border-radius: 12px;" />
+              </div>
+              
+              
+            
+            
+            
+            
+            </div>
+            
+        </div>
+        
+        <!-- Intermediate Tab Content -->
+        <div id="intermediate" class="tab-content">
+            <div class="tab-header">
+                <h2>Intermediate Analysis</h2>
+                <p>Advanced statistical analysis, feature engineering, and predictive modeling.</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="card-title">Statistical Analysis</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Hypothesis testing (t-tests, ANOVA)</li>
+                            <li>Confidence intervals calculation</li>
+                            <li>Regression analysis</li>
+                            <li>Chi-square tests</li>
+                            <li>Non-parametric tests</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 class="card-title">Feature Engineering</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Create new features from existing data</li>
+                            <li>Handle categorical variables (one-hot encoding)</li>
+                            <li>Normalization and standardization</li>
+                            <li>Feature scaling</li>
+                            <li>Binning and discretization</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h3 class="card-title">Dimensionality Reduction</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Principal Component Analysis (PCA)</li>
+                            <li>t-Distributed Stochastic Neighbor Embedding (t-SNE)</li>
+                            <li>Factor Analysis</li>
+                            <li>Feature selection techniques</li>
+                            <li>Manifold learning</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advanced Tab Content -->
+        <div id="advanced" class="tab-content">
+            <div class="tab-header">
+                <h2>Advanced AI Analysis</h2>
+                <p>Machine learning, deep learning, and AI-powered insights generation.</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="card-title">AutoML</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Automated model selection</li>
+                            <li>Hyperparameter optimization</li>
+                            <li>Feature engineering automation</li>
+                            <li>Model evaluation and comparison</li>
+                            <li>Ensemble methods</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="card-title">Deep Learning</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Neural networks for complex patterns</li>
+                            <li>Convolutional Neural Networks (CNNs)</li>
+                            <li>Recurrent Neural Networks (RNNs)</li>
+                            <li>Transfer learning</li>
+                            <li>Natural Language Processing (NLP)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="card-title">Insight Generation</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Automated insights discovery</li>
+                            <li>Anomaly detection</li>
+                            <li>Trend prediction</li>
+                            <li>Pattern recognition</li>
+                            <li>Automated report generation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script2.js') }}"></script>
+</body>
+</html>

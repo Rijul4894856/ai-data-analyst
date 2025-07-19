@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analysis Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>AI Data Analyst</h1>
+            </div>
+            <p class="subtitle">An intelligent platform for data analysis, visualization, and machine learning. Upload your dataset and let AI help you discover insights.</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="basic">
+                <i class="fas fa-cogs"></i> Basic Analysis
+            </button>
+            <button class="tab-btn" data-tab="intermediate">
+                <i class="fas fa-chart-line"></i> Intermediate
+            </button>
+            <button class="tab-btn" data-tab="advanced">
+                <i class="fas fa-robot"></i> Advanced AI
+            </button>
+        </div>
+        
+        <!-- Basic Tab Content -->
+        <div id="basic" class="tab-content active">
+            <div class="tab-header">
+                <h2>Basic Data Analysis</h2>
+                <p>Perform essential data cleaning, transformation, and visualization using Pandas, Seaborn, and Matplotlib.</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-broom"></i>
+                        </div>
+                        <h3 class="card-title">Data Cleaning</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Remove duplicate rows and columns</li>
+                            <li>Handle missing values (impute or remove)</li>
+                            <li>Detect and remove outliers</li>
+                            <li>Standardize data formats</li>
+                            <li>Fix inconsistent data entries</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="card-title">Data Transformation</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Data type conversion</li>
+                            <li>Column renaming and reordering</li>
+                            <li>Filtering rows based on conditions</li>
+                            <li>Adding calculated columns</li>
+                            <li>Group by and aggregate functions</li>
+                            <li>Pivot tables creation</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <h3 class="card-title">Data Exploration</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Summary statistics (mean, median, mode)</li>
+                            <li>Data distribution analysis</li>
+                            <li>Correlation matrix calculation</li>
+                            <li>Value counts for categorical data</li>
+                            <li>Identify data skewness</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="visualization-section">
+                    <h3><i class="fas fa-chart-bar"></i> Data Visualization</h3>
+                    <div class="chart-container">
+                        <div class="chart-box">
+                            <canvas id="histogram"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="scatter"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="bar"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="file-upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Upload your CSV, Excel, or JSON file to start analysis</p>
+                    <button class="upload-btn">Choose File</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Intermediate Tab Content -->
+        <div id="intermediate" class="tab-content">
+            <div class="tab-header">
+                <h2>Intermediate Analysis</h2>
+                <p>Advanced statistical analysis, feature engineering, and predictive modeling.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3 class="feature-title">Statistical Analysis</h3>
+                    <p class="feature-desc">Hypothesis testing, ANOVA, regression analysis, and confidence intervals.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="feature-title">Feature Engineering</h3>
+                    <p class="feature-desc">Create new features, handle categorical variables, and normalize data.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="feature-title">Dimensionality Reduction</h3>
+                    <p class="feature-desc">PCA, t-SNE, and other techniques to reduce feature space.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Time Series Analysis</h3>
+                    <p class="feature-desc">Trend analysis, seasonality detection, and forecasting.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advanced Tab Content -->
+        <div id="advanced" class="tab-content">
+            <div class="tab-header">
+                <h2>Advanced AI Analysis</h2>
+                <p>Machine learning, deep learning, and AI-powered insights generation.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">AutoML</h3>
+                    <p class="feature-desc">Automated model selection, training, and hyperparameter tuning.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3 class="feature-title">Deep Learning</h3>
+                    <p class="feature-desc">Neural networks for complex pattern recognition and predictions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="feature-title">NLP Processing</h3>
+                    <p class="feature-desc">Sentiment analysis, topic modeling, and text classification.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="feature-title">Insight Generation</h3>
+                    <p class="feature-desc">AI-powered insights and recommendations from your data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
