@@ -50,6 +50,62 @@
                 </div>
             </div>
         </div>
+
+        <!-- Upload Options Row -->
+<div class="upload-row">
+
+    <!-- Left: SQL Database -->
+    <!-- <div class="upload-box">
+        <i class="fas fa-database"></i>
+        <h2>Connect SQL Database</h2>
+        <p>Connect to your MySQL, PostgreSQL, or SQLite database</p>
+        <button class="upload-btn">Connect SQL</button>
+    </div> -->
+
+    <div class="upload-box" id="sql-box">
+        <i class="fas fa-database"></i>
+        <h2>Connect MySQL Server</h2>
+        <p>Connect to your MySQL Server database</p>
+    
+        <!-- Initially hidden form -->
+        <form id="sql-connection-form" style="display: none; flex-direction: column; gap: 12px; margin-top: 15px;">
+            <input type="text" name="host" placeholder="Host (e.g. 127.0.0.1)">
+            <input type="text" name="database" placeholder="Database Name">
+            <input type="text" name="user" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit" class="upload-btn">Connect</button>
+        </form>
+    
+        <!-- Button to show form -->
+        <button class="upload-btn" id="show-sql-form">Connect</button>
+    </div>
+    
+
+    
+
+    <!-- Center: File Upload -->
+    <div class="upload-box">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h2>Upload Your Dataset</h2>
+        <p>Drag & drop your CSV, Excel, or JSON file here</p>
+        <button class="upload-btn"><i class="fas fa-folder-open"></i> Choose File</button>
+        <div class="file-types">
+            <div class="file-type"><i class="fas fa-file-csv"></i> CSV</div>
+            <div class="file-type"><i class="fas fa-file-excel"></i> Excel</div>
+            <div class="file-type"><i class="fas fa-file-code"></i> JSON</div>
+        </div>
+    </div>
+
+    <!-- Right: Supabase -->
+    <div class="upload-box">
+        <i class="fas fa-cloud"></i>
+        <h2>Connect Supabase</h2>
+        <p>Use Supabase Postgres as your backend database</p>
+        <button class="upload-btn">Connect Supabase</button>
+    </div>
+
+</div>
+
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="basic">
@@ -150,7 +206,12 @@
                 <div class="card-content">
                     <form id="cleaning-form">
                         <div class="cleaning-option">
-                            <label><input type="checkbox" name="drop_duplicates"> Drop Duplicates</label>
+                            <label><input type="checkbox" name="drop_duplicate_rows"> Drop Duplicate Rows</label>
+                            <!-- <div id="drop-duplicate-columns" style="display: none; margin-left: 20px;"></div> -->
+
+                        </div>
+                        <div class="cleaning-option">
+                            <label><input type="checkbox" name="drop_duplicate_columns"> Drop Duplicate Columns</label>
                         </div>
                         <div class="cleaning-option">
                             <label><input type="checkbox" name="strip_column_names"> Strip Column Names</label>
