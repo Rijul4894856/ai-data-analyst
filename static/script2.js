@@ -135,7 +135,7 @@ window.onload = function () {
     uploadBtn.addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = '.csv,.xlsx,.xls,.json,.sql';
+        fileInput.accept = '.csv,.xlsx,.xls,.json';
         fileInput.click();
 
         fileInput.addEventListener('change', (e) => {
@@ -257,10 +257,15 @@ document.getElementById('clean-btn').addEventListener('click', () => {
 
     // Collect options
     const options = {
-        drop_duplicates: form.drop_duplicates.checked,
+        drop_duplicate_rows: form.drop_duplicate_rows.checked,
+        drop_duplicate_columns: form.drop_duplicate_columns.checked,
         strip_column_names: form.strip_column_names.checked,
         lowercase_columns: form.lowercase_columns.checked,
         fillna: form.fillna.value  // "na", "zero", or ""
+
+        // Left side (drop_duplicates) → this is the key name that gets sent in the JSON to your Flask backend.
+        // left side is flask+js 
+        // Right side (form.drop_duplicates.checked) → this is how JavaScript pulls the value from your HTML form (checkbox).
     };
 
     // Send POST request to Flask backend
@@ -338,7 +343,75 @@ document.getElementById('chart-type').addEventListener('change', () => {
     }
 });
 
+// document.addEventListener('DOMContentLoaded', function () {
+//     const dropDuplicatesCheckbox = document.querySelector('input[name="drop_duplicates"]');
+//     const columnDiv = document.getElementById('drop-duplicate-columns');
+
+//     dropDuplicatesCheckbox.addEventListener('change', function () {
+//         if (this.checked) {
+//             fetch('/get_columns')
+//                 .then(res => res.json())
+//                 .then(data => {
+//                     columnDiv.innerHTML = '';
+//                     data.columns.forEach(col => {
+//                         const checkbox = document.createElement('input');
+//                         checkbox.type = 'checkbox';
+//                         checkbox.name = 'drop_duplicates_columns';
+//                         checkbox.value = col;
+
+//                         const label = document.createElement('label');
+//                         label.innerText = col;
+//                         label.style.marginRight = '10px';
+
+//                         columnDiv.appendChild(checkbox);
+//                         columnDiv.appendChild(label);
+//                         columnDiv.appendChild(document.createElement('br'));
+//                     });
+//                     columnDiv.style.display = 'block';
+//                 });
+//         }
+//          else {
+//             columnDiv.innerHTML = '';
+//             columnDiv.style.display = 'none';
+//         }
+//     });
+// });
 
 
+// left side elements are shown after running the below func 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const showFormBtn = document.getElementById("show-sql-form");
+    const sqlForm = document.getElementById("sql-connection-form");
+
+    showFormBtn.addEventListener("click", () => {
+        showFormBtn.style.display = "none"; // hide connect button
+        sqlForm.style.display = "flex";     // show form inputs
+    });
+});
+
+document.getElementById("sql-connection-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const host = this.host.value;
+    const database = this.database.value;
+    const user = this.user.value;
+    const password = this.password.value;
+
+    const response = await fetch("/connect-mysql", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ host, database, user, password })
+    });
+
+    const result = await response.json();
+    if (result.error) {
+        alert("Error: " + result.error);
+    } else {
+        console.log("Tables:", result.tables);
+        alert("Connected! Tables: " + result.tables.join(", "));
+        // TODO: dynamically create a dropdown of tables
+    }
+});
 
 
