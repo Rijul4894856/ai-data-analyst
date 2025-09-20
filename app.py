@@ -54,28 +54,60 @@ def upload():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
 
 
 @app.route('/clean', methods=['POST'])
 def clean():
     try:
-        options = request.json  # Get cleaning choices from frontend
+        options = request.json
         df = data_cache.get('raw')
 
         if df is None:
             return jsonify({'error': 'No data uploaded yet'}), 400
 
         # Apply options
-        if options.get('drop_duplicates'):
+        if options.get('drop_duplicate_rows'):
             df.drop_duplicates(inplace=True)
+            
+        if options.get('drop_duplicate_columns'):
+            # Get the base column names without the .1, .2 suffixes
+            base_columns = [col.split('.')[0] for col in df.columns]
+            
+            # Find duplicates in base column names
+            seen = set()
+            duplicates = set()
+            for col in base_columns:
+                if col in seen:
+                    duplicates.add(col)
+                else:
+                    seen.add(col)
+            
+            # Keep only the first occurrence of each duplicate column
+            columns_to_keep = []
+            kept_columns = set()
+            
+            for col in df.columns:
+                base_col = col.split('.')[0]
+                if base_col not in duplicates or base_col not in kept_columns:
+                    columns_to_keep.append(col)
+                    kept_columns.add(base_col)
+            
+            df = df[columns_to_keep]
+                
         if options.get('strip_column_names'):
             df.columns = df.columns.str.strip()
+            
         if options.get('lowercase_columns'):
             df.columns = df.columns.str.lower().str.replace(" ", "_")
+            
         if options.get('fillna') == "na":
             df.fillna("N/A", inplace=True)
         elif options.get('fillna') == "zero":
             df.fillna(0, inplace=True)
+
+        data_cache['raw'] = df
 
         summary = df.describe(include='all').fillna('').to_dict()
 
@@ -86,6 +118,14 @@ def clean():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/get_columns')
+def get_columns_for_duplicates():
+    df = data_cache.get('raw')
+    if df is not None:
+        return jsonify({'columns': df.columns.tolist()})
+    else:
+        return jsonify({'columns': []})
 
 
 from flask import send_file
@@ -106,7 +146,7 @@ def download_cleaned():
     
 
 @app.route('/columns', methods=['GET'])
-def get_columns():
+def get_columns_for_dropdowns():
     df = data_cache.get('raw')
     if df is None:
         return jsonify({'error': 'No data found'}), 400
@@ -153,6 +193,80 @@ def generate_plot():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+
+
+# from flask import Flask, request, jsonify
+from sqlalchemy import create_engine, inspect
+# import pandas as pd
+
+
+
+# Store active connections
+# Store active connections
+connections = {}
+
+@app.route('/connect-mysql', methods=['POST'])
+def connect_mysql():
+    """
+    Connect to MySQL using provided credentials
+    """
+    try:
+        data = request.json
+        host = data.get("host")
+        database = data.get("database")
+        user = data.get("user")
+        password = data.get("password")
+
+        if not all([host, database, user, password]):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Connection string for MySQL
+        conn_str = f"mysql+pymysql://{user}:{password}@{host}/{database}"
+
+        # Create SQLAlchemy engine
+        engine = create_engine(conn_str)
+
+        # Check tables available
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+
+        # Save connection for later use
+        connections[database] = engine
+
+        return jsonify({
+            "message": "Connected successfully",
+            "tables": tables
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/get-mysql-table', methods=['POST'])
+def get_mysql_table():
+    """
+    Fetch a table from the connected MySQL DB
+    """
+    try:
+        data = request.json
+        database = data.get("database")
+        table_name = data.get("table")
+
+        engine = connections.get(database)
+        if engine is None:
+            return jsonify({"error": "No active connection"}), 400
+
+        # Load table into Pandas
+        df = pd.read_sql(f"SELECT * FROM {table_name} LIMIT 100", engine)
+
+        return jsonify({
+            "columns": df.columns.tolist(),
+            "rows": df.head(10).to_dict(orient="records")  # preview
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':
