@@ -267,6 +267,42 @@ def get_mysql_table():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+from supabase import create_client
+
+@app.route('/connect-supabase', methods=['POST'])
+def connect_supabase():
+    """
+    Connect to Supabase using provided URL + Key
+    """
+    try:
+        data = request.json
+        supabase_url = data.get("supabase_url")
+        supabase_key = data.get("supabase_key")
+
+        if not supabase_url or not supabase_key:
+            return jsonify({"error": "Missing Supabase URL or Key"}), 400
+
+        # Create Supabase client
+        client = create_client(supabase_url, supabase_key)
+
+        # Try listing tables from Postgres catalog
+        response = client.table("pg_tables").select("tablename").execute()
+
+        if not response.data:
+            return jsonify({"error": "Could not fetch tables (check permissions/key)"}), 400
+
+        tables = [row["tablename"] for row in response.data]
+
+        return jsonify({
+            "message": "Connected successfully",
+            "tables": tables
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == '__main__':
