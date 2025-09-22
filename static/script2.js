@@ -415,3 +415,37 @@ document.getElementById("sql-connection-form").addEventListener("submit", async 
 });
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    const showFormBtn = document.getElementById("show-supabase-form");
+    const sqlForm = document.getElementById("supabase-connection-form");
+
+    showFormBtn.addEventListener("click", () => {
+        showFormBtn.style.display = "none"; // hide connect button
+        sqlForm.style.display = "flex";     // show form inputs
+    });
+});
+
+
+document.getElementById("supabase-connection-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const supabase_url = this.supabase_url.value;
+    const supabase_key = this.supabase_key.value;
+
+    const response = await fetch("/connect-supabase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ supabase_url, supabase_key })
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+        alert("❌ Error: " + result.error);
+    } else {
+        console.log("Tables:", result.tables);
+        alert("✅ Connected! Tables: " + result.tables.join(", "));
+        // TODO: dynamically add dropdown of tables if you want
+    }
+});
+
